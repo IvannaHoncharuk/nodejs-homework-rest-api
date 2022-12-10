@@ -1,3 +1,6 @@
+const wrongUploadError = new Error('Wrong file type');
+wrongUploadError.status = 400;
+
 const unauthorizedError = new Error('Not authorized');
 unauthorizedError.status = 401;
 
@@ -11,6 +14,7 @@ const conflictError = new Error('Email in use');
 conflictError.status = 409;
 
 module.exports = {
+    wrongUploadError,
     unauthorizedError,
     notFoundError,
     conflictError,
