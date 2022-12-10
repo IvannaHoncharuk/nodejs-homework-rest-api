@@ -10,13 +10,24 @@ const {
 const { notFoundError } = require('../helpers/errors');
 
 const getContactsController = async (req, res) => {
-    const contacts = await getContacts();
+    const { _id: userId } = req.user;
+    const { page = 1, limit = 5, favorite = false } = req.query;
+
+    const pagination = {
+        skip: (page - 1) * limit,
+        limit: Number(limit) > 10 ? 10 : Number(limit),
+    };
+
+    const contacts = await getContacts(userId, pagination, favorite);
 
     res.status(200).json(contacts);
 };
 
 const getContactByIdController = async (req, res) => {
-    const contact = await getContactById(req.params.contactId);
+    const { _id: userId } = req.user;
+    const { contactId } = req.params;
+
+    const contact = await getContactById(contactId, userId);
 
     if (!contact) throw notFoundError;
 
@@ -24,7 +35,9 @@ const getContactByIdController = async (req, res) => {
 };
 
 const createContactController = async (req, res) => {
-    const createdContact = await createContact(req.body);
+    const { _id: userId } = req.user;
+
+    const createdContact = await createContact(req.body, userId);
 
     if (!createdContact) throw notFoundError;
 
@@ -32,10 +45,10 @@ const createContactController = async (req, res) => {
 };
 
 const updateContactByIdController = async (req, res) => {
-    const updatedContact = await updateContactById(
-        req.params.contactId,
-        req.body
-    );
+    const { _id: userId } = req.user;
+    const { contactId } = req.params;
+
+    const updatedContact = await updateContactById(contactId, req.body, userId);
 
     if (!updatedContact) throw notFoundError;
 
@@ -43,9 +56,13 @@ const updateContactByIdController = async (req, res) => {
 };
 
 const toggleFavoriteByIdController = async (req, res) => {
+    const { _id: userId } = req.user;
+    const { contactId } = req.params;
+
     const updatedContact = await toggleFavoriteById(
-        req.params.contactId,
-        req.body
+        contactId,
+        req.body,
+        userId
     );
 
     if (!updatedContact) throw notFoundError;
@@ -54,7 +71,10 @@ const toggleFavoriteByIdController = async (req, res) => {
 };
 
 const deleteContactByIdController = async (req, res) => {
-    const deletedContact = await deleteContactById(req.params.contactId);
+    const { _id: userId } = req.user;
+    const { contactId } = req.params;
+
+    const deletedContact = await deleteContactById(contactId, userId);
 
     if (!deletedContact) throw notFoundError;
 

@@ -21,6 +21,10 @@ const {
 
 const ctrlWrapper = require('../../helpers/ctrlWrapper');
 
+const { authMiddleware } = require('../../middlewares/authMiddleware');
+
+router.use(authMiddleware);
+
 router.get('/', ctrlWrapper(getContactsController));
 
 router.get('/:contactId', ctrlWrapper(getContactByIdController));
