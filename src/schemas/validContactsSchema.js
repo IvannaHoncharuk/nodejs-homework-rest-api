@@ -19,7 +19,7 @@ const toggleFavoriteSchema = Joi.object({
 }).min(1);
 
 module.exports = {
-    addContactSchema,
-    updateContactSchema,
     toggleFavoriteSchema,
+    updateContactSchema,
+    addContactSchema,
 };
