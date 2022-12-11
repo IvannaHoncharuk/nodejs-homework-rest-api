@@ -1,6 +1,9 @@
 const wrongUploadError = new Error('Wrong file type');
 wrongUploadError.status = 400;
 
+const verificationPassedError = new Error('Verification has already been passed');
+verificationPassedError.status = 400;
+
 const unauthorizedError = new Error('Not authorized');
 unauthorizedError.status = 401;
 
@@ -15,6 +18,7 @@ conflictError.status = 409;
 
 module.exports = {
     wrongUploadError,
+    verificationPassedError,
     unauthorizedError,
     notFoundError,
     conflictError,
