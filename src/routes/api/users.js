@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const { authMiddleware } = require('../../middlewares/authMiddleware');
+const { uploadMiddleware } = require('../../middlewares/uploadMiddleware');
 
 const { subscriptionSchema } = require('../../schemas/validUserSchema');
 const { userSchema } = require('../../schemas/validUserSchema');
@@ -16,6 +17,7 @@ const {
 const {
     getCurrentController,
     updateSubscriptionController,
+    updateAvatarController,
 } = require('../../controllers/usersController');
 
 const ctrlWrapper = require('../../helpers/ctrlWrapper');
@@ -36,6 +38,12 @@ router.patch(
     '/',
     [authMiddleware, validationBody(subscriptionSchema)],
     ctrlWrapper(updateSubscriptionController)
+);
+
+router.patch(
+    '/avatars',
+    [authMiddleware, uploadMiddleware.single('avatar')],
+    ctrlWrapper(updateAvatarController)
 );
 
 module.exports = router;
