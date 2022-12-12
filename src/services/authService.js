@@ -4,16 +4,37 @@ const gravatar = require('gravatar');
 
 const { JWT_SECRET } = process.env;
 
-const signup = async (email, password, subscription) => {
+const signup = async (email, password, subscription, verificationToken) => {
     if (await User.findOne({ email })) return null;
 
     const avatarURL = gravatar.url(email);
 
-    const newUser = new User({ email, password, subscription, avatarURL });
+    const newUser = new User({ email, password, subscription, avatarURL, verificationToken });
     await newUser.hashPassword(password);
     newUser.save();
 
     return newUser;
+};
+
+const verificationEmail = async verificationToken => {
+    const user = await User.findOne({ verificationToken });
+
+    if (!user || user.verify) return null;
+
+    await User.findByIdAndUpdate(user._id, {
+        verify: true,
+        verificationToken: null,
+    });
+
+    return user;
+};
+
+const getVerificationToken = async email => {
+    const user = await User.findOne({ email });
+
+    if (user.verify) return null;
+
+    return user.verificationToken;
 };
 
 const login = async (email, password) => {
@@ -37,4 +58,4 @@ const logout = async userId => {
     return user;
 };
 
-module.exports = { signup, login, logout };
+module.exports = { signup, verificationEmail, getVerificationToken, login, logout };

@@ -9,4 +9,8 @@ const subscriptionSchema = Joi.object({
     subscription: Joi.string().valid('starter', 'pro', 'business'),
 });
 
-module.exports = { userSchema, subscriptionSchema };
+const resendEmailSchema = Joi.object({
+    email: Joi.string().email({ minDomainSegments: 2 }).required(),
+});
+
+module.exports = { userSchema, subscriptionSchema, resendEmailSchema };
